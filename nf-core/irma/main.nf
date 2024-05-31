@@ -1,4 +1,5 @@
 process irma {
+    container 'library://wallaulabs/flufind/irma:1.1.3'
     input:
     val(single_end)
     path fastq_r1
@@ -15,7 +16,7 @@ process irma {
     
     """
     mkdir -p ${output_dir}
-    singularity exec irma_1.1.3.sif ${irma_cmd}
+    ${irma_cmd}
     cat ${output_dir}/${params.sample_name}/amended_consensus/*.fa > ${output_dir}/${params.sample_name}_consensus.fasta
     """
 }

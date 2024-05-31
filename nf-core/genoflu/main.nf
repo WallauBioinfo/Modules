@@ -1,4 +1,5 @@
 process genoflu {
+    container 'library://wallaulabs/flufind/genoflu:1.2.0'
     input:
     path input_fasta
 
@@ -9,6 +10,6 @@ process genoflu {
     def output_dir = "${params.sample_name}_genoflu_output"
     """
     mkdir -p ${output_dir}
-    singularity exec genoflu_1.2.0.sif genoflu.py -f ${input_fasta} -n ${output_dir}/${params.sample_name} > ${output_dir}/genoflu.log
+    genoflu.py -f ${input_fasta} -n ${output_dir}/${params.sample_name} > ${output_dir}/genoflu.log
     """
 }
