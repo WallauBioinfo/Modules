@@ -1,21 +1,21 @@
-process IRMA {
-    tag "$meta.id"
+process irma {
     input:
-    tuple val(sample_name), val(fastq_r1), val(fastq_r2), val(output_dir)
+    val(single_end)
+    path fastq_r1
+    path fastq_r2 optional true
 
     output:
-    path "${output_dir}/${sample_name}/amended_consensus/*.fa", emit: fasta_consensus
+    path "${params.sample_name}_consensus.fasta" into fasta_consensus_ch
 
     script:
-    if (fastq_r2) {
-        """
-        echo "Executando IRMA modo paired-end..."
-        singularity exec irma_1.1.3.sif IRMA "FLU" ${fastq_r1} ${fastq_r2} ${output_dir}/${sample_name}
-        """
-    } else {
-        """
-        echo "Executando IRMA modo single-end..."
-        singularity exec irma_1.1.3.sif IRMA "FLU" ${fastq_r1} ${output_dir}/${sample_name}
-        """
-    }
+    def output_dir = "flusionfind_${params.sample_name}"
+    def irma_cmd = single_end ? 
+        "IRMA FLU ${fastq_r1} ${output_dir}/${params.sample_name}" : 
+        "IRMA FLU ${fastq_r1} ${fastq_r2} ${output_dir}/${params.sample_name}"
+    
+    """
+    mkdir -p ${output_dir}
+    singularity exec irma_1.1.3.sif ${irma_cmd}
+    cat ${output_dir}/${params.sample_name}/amended_consensus/*.fa > ${output_dir}/${params.sample_name}_consensus.fasta
+    """
 }

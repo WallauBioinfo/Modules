@@ -1,14 +1,13 @@
-process RUN_NEXTCLADE {
-    tag "$meta.id"
+process nextclade {
     input:
-    path fasta_consensus, path nextclade_dataset, val(output_dir)
+    path input_fasta
 
     output:
-    path "${output_dir}/nextclade_output", emit: nextclade_output
+    path "nextclade_output" into nextclade_output_fasta_ch
 
     script:
     """
-    echo "Executando Nextclade..." 
-    singularity exec nextclade_3.0.0.sif nextclade run --input-dataset ${nextclade_dataset} -O ${output_dir}/nextclade_output ${fasta_consensus}
+    singularity exec nextclade_3.0.0.sif nextclade dataset get --name nextstrain/flu/h1n1pdm/ha/CY121680 --tag 2024-04-19--07-50-39Z --output-dir data/Influenza-A
+    singularity exec nextclade_3.0.0.sif nextclade run --input-dataset data/Influenza-A -O nextclade_output ${input_fasta}
     """
 }
