@@ -1,14 +1,17 @@
 process nextclade {
-    container 'library://wallaulabs/flufind/nextclade:3.0.0'
     input:
-    path input_fasta
+    val concat_result
+    val output_dir
+    val sample_name
 
-    output:
-    path "nextclade_output" into nextclade_output_fasta_ch
+    container 'nextstrain/nextclade:3.0.0'
 
     script:
+    def fasta_consensus = "${output_dir}/${sample_name}_consensus.fasta"
+    def nextclade_output = "${output_dir}/nextclade_output"
+    def nextclade_dataset = "data/Influenza-A"
     """
-    nextclade dataset get --name nextstrain/flu/h1n1pdm/ha/CY121680 --tag 2024-04-19--07-50-39Z --output-dir data/Influenza-A
-    nextclade run --input-dataset data/Influenza-A -O nextclade_output ${input_fasta}
+    mkdir -p $nextclade_output
+    nextclade run --input-dataset $nextclade_dataset -O $nextclade_output $fasta_consensus
     """
 }

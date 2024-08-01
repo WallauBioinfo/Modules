@@ -1,22 +1,33 @@
-process irma {
-    container 'library://wallaulabs/flufind/irma:1.1.3'
+process irma_process {
+
+    container 'cdcgov/irma:v1.1.5'
+    cpus 4
+    memory '8 GB'
+
     input:
-    val(single_end)
+    val sample_name
     path fastq_r1
-    path fastq_r2 optional true
+    path fastq_r2
+    val output_dir
+
+    publishDir "${projectDir}", mode: 'copy', overwrite: false
 
     output:
-    path "${params.sample_name}_consensus.fasta" into fasta_consensus_ch
-
-    script:
-    def output_dir = "flusionfind_${params.sample_name}"
-    def irma_cmd = single_end ? 
-        "IRMA FLU ${fastq_r1} ${output_dir}/${params.sample_name}" : 
-        "IRMA FLU ${fastq_r1} ${fastq_r2} ${output_dir}/${params.sample_name}"
+    path "${params.output_dir}", emit: irma_out
+    path "${output_dir}/${sample_name}/amended_consensus/", emit: fasta
     
-    """
-    mkdir -p ${output_dir}
-    ${irma_cmd}
-    cat ${output_dir}/${params.sample_name}/amended_consensus/*.fa > ${output_dir}/${params.sample_name}_consensus.fasta
-    """
+    script:
+    def fastq_r2_param = fastq_r2 ? fastq_r2 : ""
+
+    if (fastq_r2_param) {
+        """
+        mkdir -p $output_dir
+        IRMA "FLU" "$fastq_r1" "$fastq_r2_param" "$output_dir/$sample_name"
+        """
+    } else {
+        """
+        mkdir -p $output_dir
+        IRMA "FLU" "$fastq_r1" "$output_dir/$sample_name"
+        """
+    }
 }

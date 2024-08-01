@@ -1,15 +1,19 @@
 process genoflu {
-    container 'library://wallaulabs/flufind/genoflu:1.2.0'
+    
+    container ''
+    cpus 4
+    memory '8 GB'
+    
     input:
-    path input_fasta
-
-    output:
-    path "${params.sample_name}_genoflu_output/${params.sample_name}_consensus.fasta" into genoflu_output_fasta_ch
+    val concat_result
+    val output_dir
+    val sample_name
 
     script:
-    def output_dir = "${params.sample_name}_genoflu_output"
+    def fasta_consensus = "${output_dir}/${sample_name}_consensus.fasta"
+    def genoflu_output = "${output_dir}/genoflu_output"
     """
-    mkdir -p ${output_dir}
-    genoflu.py -f ${input_fasta} -n ${output_dir}/${params.sample_name} > ${output_dir}/genoflu.log
+    mkdir -p $genoflu_output
+    genoflu.py -f $fasta_consensus -n $genoflu_output/$sample_name > "$genoflu_output/genoflu.log"
     """
 }
