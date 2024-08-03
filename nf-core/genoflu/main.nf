@@ -1,19 +1,21 @@
 process genoflu {
     
-    container ''
+    container 'genoflu:1.02.0'
     cpus 4
     memory '8 GB'
     
     input:
-    val concat_result
-    val output_dir
+    path consensus
     val sample_name
-
+    
+    publishDir "${projectDir}", mode: 'copy', overwrite: false
+    
+    output:
+    path "${params.output_dir}", emit: irma_out
+    
     script:
-    def fasta_consensus = "${output_dir}/${sample_name}_consensus.fasta"
-    def genoflu_output = "${output_dir}/genoflu_output"
     """
-    mkdir -p $genoflu_output
-    genoflu.py -f $fasta_consensus -n $genoflu_output/$sample_name > "$genoflu_output/genoflu.log"
+    mkdir -p genoflu_output
+    genoflu.py -f ${consensus} -n genoflu_output/ > "genoflu_output/genoflu.log"
     """
 }
