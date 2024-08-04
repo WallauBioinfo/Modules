@@ -13,7 +13,7 @@ process irma_process {
     publishDir "${projectDir}", mode: 'copy', overwrite: false
 
     output:
-    path "${params.output_dir}", emit: irma_out
+    path "${output_dir}", emit: irma_out
     path "${output_dir}/${sample_name}/amended_consensus/", emit: fasta
     
     script:

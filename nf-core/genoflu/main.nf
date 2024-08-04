@@ -8,14 +8,13 @@ process genoflu {
     path consensus
     val sample_name
     
-    publishDir "${projectDir}", mode: 'copy', overwrite: false
-    
     output:
-    path "${params.output_dir}", emit: irma_out
+    path "genoflu_out/*", emit: genoflu_out
     
+    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+
     script:
     """
-    mkdir -p genoflu_output
-    genoflu.py -f ${consensus} -n genoflu_output/ > "genoflu_output/genoflu.log"
+    genoflu.py -f ${consensus} -n genoflu_out/${sample_name}
     """
 }

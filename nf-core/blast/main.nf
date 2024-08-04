@@ -7,6 +7,7 @@ process blast {
     input:
     path consensus
     path database
+    val sample_name
 
     publishDir "${params.output_dir}", mode: 'copy', overwrite: false
 
