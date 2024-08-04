@@ -15,6 +15,8 @@ process genoflu {
 
     script:
     """
-    genoflu.py -f ${consensus} -n genoflu_out/${sample_name}
+    genoflu.py \\
+      -f ${consensus} \\
+      -n genoflu_out/${sample_name}
     """
 }
