@@ -5,9 +5,10 @@ process minimap2 {
     memory '8 GB'
 
     input:
+    path consensus
     path fastq_r1
     path fastq_r2
-    path consensus
+    
 
     publishDir "${params.output_dir}", mode: 'copy', overwrite: false
 
@@ -17,9 +18,7 @@ process minimap2 {
     script:
     """
     minimap2 \\
-      -ax map-ont \\
-      -t${task.cpus} \\
-      ${consensus} \\
+      -a ${consensus} \\
       ${fastq_r1} ${fastq_r2} \\
       > ${params.sample_name}.sam
     """
