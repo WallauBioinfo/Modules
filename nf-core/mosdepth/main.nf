@@ -2,11 +2,11 @@ process mosdepth_thresholds {
 
 // Choosing the execution environment
     if (params.env == 'singularity') {
-        container 'library://wallaulabs/flufind/irma:1.1.3'
+        container ''
     } else if (params.env == 'docker') {
         container 'quay.io/biocontainers/mosdepth:0.3.8--hd299d5a_0'
     } else if (params.env == 'conda') {
-        conda 'path/to/irma_env.yml'
+        conda ''
     }
     
     cpus 8

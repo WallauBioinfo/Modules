@@ -2,11 +2,11 @@ process blast {
 
     // Choosing the execution environment
     if (params.env == 'singularity') {
-        container 'library://wallaulabs/flufind/irma:1.1.3'
+        container ''
     } else if (params.env == 'docker') {
         container 'ncbi/blast:2.16.0'
     } else if (params.env == 'conda') {
-        conda 'path/to/irma_env.yml'
+        conda ''
     }
 
     cpus 8

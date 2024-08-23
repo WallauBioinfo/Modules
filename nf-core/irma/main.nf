@@ -2,11 +2,11 @@ process irma_process {
 
 // Choosing the execution environment
     if (params.env == 'singularity') {
-        container 'library://wallaulabs/flufind/irma:1.1.3'
+        container ''
     } else if (params.env == 'docker') {
         container 'cdcgov/irma:v1.1.5'
     } else if (params.env == 'conda') {
-        conda 'path/to/irma_env.yml'
+        conda ''
     }
 
     cpus 4
