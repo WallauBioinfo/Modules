@@ -1,6 +1,6 @@
 process irma_process {
 
-// Escolha do ambiente de execução
+// Choosing the execution environment
     if (params.env == 'singularity') {
         container 'library://wallaulabs/flufind/irma:1.1.3'
     } else if (params.env == 'docker') {
