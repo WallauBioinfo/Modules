@@ -21,7 +21,7 @@ process irma_process {
     output:
     path "${output_dir}", emit: irma_out
     path "${output_dir}/${sample_id}/amended_consensus/", emit: fasta
-    
+
     script:
     def fastq_miss = reads[1] ? reads[1] : ""
     """
