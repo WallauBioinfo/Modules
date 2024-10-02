@@ -4,7 +4,7 @@ process genoflu {
     if (params.env == 'singularity') {
         container ''
     } else if (params.env == 'docker') {
-        container 'genoflu:1.02.0'
+        container 'staphb/genoflu:1.03'
     } else if (params.env == 'conda') {
         conda ''
     }
