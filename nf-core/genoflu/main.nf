@@ -19,7 +19,7 @@ process genoflu {
     output:
     path "genoflu_out/*", emit: genoflu_out
     
-    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
 
     script:
     """

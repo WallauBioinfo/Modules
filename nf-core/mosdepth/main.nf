@@ -18,7 +18,7 @@ process mosdepth_thresholds {
     path bed
     path samtools_bam_bai
 
-    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
 
     output:
     path "${sample_id}.thresholds.bed.gz", emit: mosdepth

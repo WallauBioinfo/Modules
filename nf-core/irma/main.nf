@@ -16,11 +16,11 @@ process irma_process {
     tuple val(sample_id), path(reads)
     val output_dir
 
-    publishDir "${projectDir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
 
     output:
-    path "${output_dir}", emit: irma_out
-    path "${output_dir}/${sample_id}/amended_consensus/", emit: fasta
+    path "${sample_id}/irma_out", emit: irma_out
+    path "${sample_id}/irma_out/amended_consensus/", emit: fasta
 
     script:
     def fastq_miss = reads[1] ? reads[1] : ""
@@ -30,14 +30,12 @@ process irma_process {
     if (fastq_miss) {
         """
         echo "Paired-end processing with R1: ${reads[0]} and R2: ${reads[1]}"
-        mkdir -p $output_dir
-        IRMA "FLU" ${reads[0]} ${reads[1]} $output_dir/$sample_id
+        IRMA "FLU" ${reads[0]} ${reads[1]} ${sample_id}/irma_out
         """
     } else {
         """
         echo "Single-end processing with R1: ${reads[0]}"
-        mkdir -p $output_dir
-        IRMA "FLU" ${reads[0]} $output_dir/$sample_id
+        IRMA "FLU" ${reads[0]} ${sample_id}/irma_out
         """
     }
     

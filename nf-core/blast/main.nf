@@ -17,7 +17,7 @@ process blast {
     path consensus
     path database
 
-    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
 
     output:
     path "${sample_id}_blast.tsv", emit: blast_out

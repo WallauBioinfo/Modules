@@ -16,7 +16,7 @@ process samtools_view {
     tuple val(sample_id), path(reads)
     path minimap2_sam
 
-    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
 
     output:
     path "${sample_id}.bam", emit: samtools_bam

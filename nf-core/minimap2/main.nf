@@ -16,7 +16,7 @@ process minimap2 {
     tuple val(sample_id), path(reads)
     path consensus
 
-    publishDir "${params.output_dir}", mode: 'copy', overwrite: false
+    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
 
     output:
     path "${sample_id}.sam", emit: minimap2_sam
