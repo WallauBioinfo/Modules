@@ -12,22 +12,23 @@ process samtools_view {
     cpus 4
     memory '8 GB'
 
-    input:
-    tuple val(sample_id), path(reads)
-    path minimap2_sam
+    tag "Samtools view ${sampleId}"
+    
+    publishDir "${params.output_dir}/${sampleId}", mode: 'copy', overwrite: false
 
-    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
+    input:
+    tuple val(sampleId), path(fastq1), path(fastq2), val(library)
+    path minimap2_sam
+    val output_dir
 
     output:
-    path "${sample_id}.bam", emit: samtools_bam
-    path "${sample_id}.bam.bai", emit: samtools_bam_bai
+    path "${sampleId}.bam", emit: samtools_bam
+    path "${sampleId}.bam.bai", emit: samtools_bam_bai
         
     script:
     """
-    samtools sort ${minimap2_sam} \\
-    > ${sample_id}.bam
+    samtools sort ${minimap2_sam} > ${sampleId}.bam
     
-    samtools index \\
-    ${sample_id}.bam
+    samtools index ${sampleId}.bam
     """
 }

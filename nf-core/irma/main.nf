@@ -11,32 +11,29 @@ process irma_process {
 
     cpus 4
     memory '8 GB'
-
-    input:
-    tuple val(sample_id), path(reads)
-    val output_dir
-
+    
+    tag "IRMA ${sampleId}"
+    
     publishDir "${params.output_dir}", mode: 'copy', overwrite: false
 
+    input:
+    tuple val(sampleId), path(fastq1), path(fastq2), val(library)
+    val output_dir
+
     output:
-    path "${sample_id}/irma_out", emit: irma_out
-    path "${sample_id}/irma_out/amended_consensus/", emit: fasta
+    path "${sampleId}/irma_out", emit: irma_out
+    path "${sampleId}/irma_out/amended_consensus/", emit: fasta
 
     script:
-    def fastq_miss = reads[1] ? reads[1] : ""
     """
-    echo "Processing ${sample_id}"
+    echo "Processing ${sampleId}"
+
+    if [ ! -z "${fastq2}" ]; then
+        echo "Paired-end processing with R1: ${fastq1} and R2: ${fastq2}"
+        IRMA "FLU" ${fastq1} ${fastq2} ${sampleId}/irma_out
+    else
+        echo "Single-end processing with R1: ${fastq1}"
+        IRMA "FLU" ${fastq1} ${sampleId}/irma_out
+    fi
     """
-    if (fastq_miss) {
-        """
-        echo "Paired-end processing with R1: ${reads[0]} and R2: ${reads[1]}"
-        IRMA "FLU" ${reads[0]} ${reads[1]} ${sample_id}/irma_out
-        """
-    } else {
-        """
-        echo "Single-end processing with R1: ${reads[0]}"
-        IRMA "FLU" ${reads[0]} ${sample_id}/irma_out
-        """
     }
-    
-}

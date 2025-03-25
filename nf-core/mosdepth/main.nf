@@ -12,23 +12,26 @@ process mosdepth_thresholds {
     cpus 8
     memory '16 GB'
 
+    tag "Mosdepth ${sampleId}"
+    
+    publishDir "${params.output_dir}/${sampleId}", mode: 'copy', overwrite: false
+
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(sampleId), path(fastq1), path(fastq2), val(library)
     path samtools_bam
     path bed
     path samtools_bam_bai
-
-    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
+    val output_dir
 
     output:
-    path "${sample_id}.thresholds.bed.gz", emit: mosdepth
+    path "${sampleId}.thresholds.bed.gz", emit: mosdepth
 
     script:
     """
     mosdepth \\
     --by ${bed} \\
     --thresholds 10,20,30 \\
-    ${sample_id} \\
+    ${sampleId} \\
     ${samtools_bam}
     """
 }

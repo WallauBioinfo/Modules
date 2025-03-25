@@ -12,19 +12,22 @@ process genoflu {
     cpus 4
     memory '8 GB'
     
-    input:
-    tuple val(sample_id), path(reads)
-    path consensus
+    tag "GenoFlu ${sampleId}"
     
+    publishDir "${params.output_dir}/${sampleId}", mode: 'copy', overwrite: false
+
+    input:
+    tuple val(sampleId), path(fastq1), path(fastq2), val(library)
+    path consensus
+    val output_dir
+
     output:
     path "genoflu_out/*", emit: genoflu_out
     
-    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
-
     script:
     """
     genoflu.py \\
       -f ${consensus} \\
-      -n genoflu_out/${sample_id}
+      -n genoflu_out/${sampleId}
     """
 }

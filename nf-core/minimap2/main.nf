@@ -12,33 +12,28 @@ process minimap2 {
     cpus 4
     memory '8 GB'
 
-    input:
-    tuple val(sample_id), path(reads)
-    path consensus
+    tag "Minimap2 ${sampleId}"
+    
+    publishDir "${params.output_dir}/${sampleId}", mode: 'copy', overwrite: false
 
-    publishDir "${params.output_dir}/${sample_id}", mode: 'copy', overwrite: false
+    input:
+    tuple val(sampleId), path(fastq1), path(fastq2), val(library)
+    path consensus
+    val output_dir
 
     output:
-    path "${sample_id}.sam", emit: minimap2_sam
+    path "${sampleId}.sam", emit: minimap2_sam
         
     script:
-    def fastq_miss = reads[1] ? reads[1] : ""
     """
-    echo "Processing ${sample_id}"
+    echo "Processing ${sampleId}"
+
+    if [ ! -z "${fastq2}" ]; then
+        echo "Paired-end processing with R1: ${fastq1} and R2: ${fastq2}"
+        minimap2 -a ${consensus} ${fastq1} ${fastq2} > ${sampleId}.sam
+    else
+        echo "Single-end processing with R1: ${fastq1}"
+        minimap2 -a ${consensus} ${fastq1} > ${sampleId}.sam
+    fi
     """
-    if (fastq_miss) {
-        """
-    minimap2 \\
-      -a ${consensus} \\
-      ${reads[0]} ${reads[1]} \\
-      > ${sample_id}.sam
-    """
-    } else {
-        """
-    minimap2 \\
-      -a ${consensus} \\
-      ${reads[0]} \\
-      > ${sample_id}.sam
-    """
-    }
 }
