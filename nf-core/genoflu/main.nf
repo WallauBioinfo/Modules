@@ -18,11 +18,11 @@ process genoflu {
 
     input:
     tuple val(sampleId), path(fastq1), path(fastq2), val(library)
-    path consensus
+    tuple val(sampleId), path(consensus)
     val output_dir
 
     output:
-    path "genoflu_out/*", emit: genoflu_out
+    tuple val(sampleId), path("genoflu_out/*"), emit: genoflu_out
     
     script:
     """

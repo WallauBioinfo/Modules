@@ -18,13 +18,13 @@ process mosdepth_thresholds {
 
     input:
     tuple val(sampleId), path(fastq1), path(fastq2), val(library)
-    path samtools_bam
-    path bed
-    path samtools_bam_bai
+    tuple val(sampleId), path(samtools_bam)
+    tuple val(sampleId), path(bed)
+    tuple val(sampleId), path(samtools_bam_bai)
     val output_dir
 
     output:
-    path "${sampleId}.thresholds.bed.gz", emit: mosdepth
+    tuple val(sampleId), path("${sampleId}.thresholds.bed.gz"), emit: mosdepth
 
     script:
     """

@@ -21,8 +21,8 @@ process irma_process {
     val output_dir
 
     output:
-    path "${sampleId}/irma_out", emit: irma_out
-    path "${sampleId}/irma_out/amended_consensus/", emit: fasta
+    tuple val(sampleId), path("${sampleId}/irma_out"), emit: irma_out
+    tuple val(sampleId), path("${sampleId}/irma_out/amended_consensus/"), emit: fasta
 
     script:
     """

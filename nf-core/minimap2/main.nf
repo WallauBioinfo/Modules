@@ -18,11 +18,11 @@ process minimap2 {
 
     input:
     tuple val(sampleId), path(fastq1), path(fastq2), val(library)
-    path consensus
+    tuple val(sampleId), path(consensus)
     val output_dir
 
     output:
-    path "${sampleId}.sam", emit: minimap2_sam
+    tuple val(sampleId), path("${sampleId}.sam"), emit: minimap2_sam
         
     script:
     """

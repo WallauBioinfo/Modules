@@ -18,12 +18,12 @@ process samtools_view {
 
     input:
     tuple val(sampleId), path(fastq1), path(fastq2), val(library)
-    path minimap2_sam
+    tuple val(sampleId), path(minimap2_sam)
     val output_dir
 
     output:
-    path "${sampleId}.bam", emit: samtools_bam
-    path "${sampleId}.bam.bai", emit: samtools_bam_bai
+    tuple val(sampleId), path("${sampleId}.bam"), emit: samtools_bam
+    tuple val(sampleId), path("${sampleId}.bam.bai"), emit: samtools_bam_bai
         
     script:
     """
